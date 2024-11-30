@@ -1,5 +1,5 @@
 # EE 128: Sensing and Actuation for Embedded Systems - Mini Project
-Welcome to my CS 120B custom laboratory project repository for the course "Introduction to Embedded Systems" at UC Riverside. This repository contains the code, documentation, and resources for my project.
+Welcome to my EE 128 custom laboratory project repository for the course "Sensing and Actuation for Embedded Systems" at UC Riverside. This repository contains the code, documentation, and resources for my project.
 
 ## Project Description
 
