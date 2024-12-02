@@ -79,11 +79,11 @@ void TimerOn() {
 }
 
 // Global variables
-unsigned char password[] = {'1', '1', '1', '1'};		// Password as characters
-unsigned char user_input[4] = {'\0'};					// Initialize all elements to 0
-unsigned char input_index = 0;							// Index for the user input
-unsigned char locked = 1;								// Locked state: 0 = unlocked, 1 = locked
-unsigned char phases[4] = {0x36, 0x35, 0x39, 0x3A};		// Stepper motor phases
+unsigned char password[] = {'1', '1', '1', '1'};	// Password as characters
+unsigned char user_input[4] = {'\0'};			// Initialize all elements to 0
+unsigned char input_index = 0;				// Index for the user input
+unsigned char locked = 1;				// Locked state: 0 = unlocked, 1 = locked
+unsigned char phases[4] = {0x36, 0x35, 0x39, 0x3A};	// Stepper motor phases
 
 // Keypad mapping
 static char keypad[4][4] = {
@@ -119,15 +119,15 @@ char get_key(void) {
 
 // Lock system
 void lock_system(void) {
-	locked = 1;			// Set system to locked state
+	locked = 1;		// Set system to locked state
 	input_index = 0;	// Reinitialize input_index to 0
 	memset(user_input, '\0', sizeof(user_input));  // Reset user_input to all '\0'
 }
 
 // Unlock system
 void unlock_system(void) {
-	locked = 0;					// Set system to unlocked state
-	input_index = 0;			// Reinitialize input index to 0
+	locked = 0;			// Set system to unlocked state
+	input_index = 0;		// Reinitialize input index to 0
 	GPIOB_PDOR &= ~(1 << 2);	// Turn off red LED
 	GPIOB_PDOR |= (1 << 3);		// Turn on green LED
 }
@@ -141,7 +141,7 @@ void compare_password(void) {
 		if (user_input[i] != password[i]) {
 			// If any character doesn't match, keep the system locked and indicate error
 			lock_system();	// Reset lock
-			return;			// Exit the function immediately
+			return;		// Exit the function immediately
 		}
 	}
 
@@ -151,19 +151,19 @@ void compare_password(void) {
 
 // Passive buzzer off, PWM mode disabled
 void buzzer_off(void) {
-	FTM3_MODE = 0x5;			// Enable FTM3
-	FTM3_MOD = 10499;			// period
-	FTM3_C6SC = 0x00;			// PWM active low
-	FTM3_C6V = 5250;			// pulse width
+	FTM3_MODE = 0x5;		// Enable FTM3
+	FTM3_MOD = 10499;		// period
+	FTM3_C6SC = 0x00;		// PWM active low
+	FTM3_C6V = 5250;		// pulse width
 	FTM3_SC = (1 << 3) | 1; 	// system clock; prescale 2
 }
 
 // Passive buzzer on, PWM mode enabled
 void buzzer_on(void) {
-	FTM3_MODE = 0x5;			// Enable FTM3
-	FTM3_MOD = 10499;			// period
-	FTM3_C6SC = 0x28;			// PWM active high
-	FTM3_C6V = 5250;			// pulse width
+	FTM3_MODE = 0x5;		// Enable FTM3
+	FTM3_MOD = 10499;		// period
+	FTM3_C6SC = 0x28;		// PWM active high
+	FTM3_C6V = 5250;		// pulse width
 	FTM3_SC = (1 << 3) | 1; 	// system clock; prescale 2
 }
 
@@ -177,8 +177,8 @@ void sync_motor_bit_to_led(unsigned int PORTD_PIN) {
 }
 
 // State machine enumerations and declarations
-enum SM1_Tick { SM1_INIT, SM1_IDLE, SM1_LOG_KEY, SM1_LOCK_SYSTEM, SM1_DEBOUNCE_KEY };						// States for state machine 1
-enum SM2_Tick { SM2_INIT, SM2_IDLE, SM2_LOCK_SYSTEM, SM2_DEBOUNCE_KEY };									// States for state machine 2
+enum SM1_Tick { SM1_INIT, SM1_IDLE, SM1_LOG_KEY, SM1_LOCK_SYSTEM, SM1_DEBOUNCE_KEY };				// States for state machine 1
+enum SM2_Tick { SM2_INIT, SM2_IDLE, SM2_LOCK_SYSTEM, SM2_DEBOUNCE_KEY };					// States for state machine 2
 enum SM3_Tick { SM3_INIT, SM3_MOTOR_LOCKED, SM3_MOTOR_UNLOCKED, SM3_TURN_MOTOR_CW, SM3_TURN_MOTOR_CCW };	// States for state machine 3
 int SM1_Tick(int state);	// Tick function for state machine 1
 int SM2_Tick(int state);	// Tick function for state machine 2
@@ -283,7 +283,7 @@ int SM2_Tick(int state) {
 		if (user_input[3] != '\0') {
 			compare_password();
 		}
-		GPIOB_PDOR = (!locked) ? (GPIOB_PDOR | (1 << 3)) : (GPIOB_PDOR & ~(1 << 3)); // Green LED
+		GPIOB_PDOR = (!locked) ? (GPIOB_PDOR | (1 << 3)) : (GPIOB_PDOR & ~(1 << 3)); // Handle green LED
 		break;
 
 	default:
@@ -295,7 +295,7 @@ int SM2_Tick(int state) {
 
 // State machine 3 tick function - Stepper motor operation
 int SM3_Tick(int state) {
-	static unsigned char i = 0;	// Variable to track steps
+	static unsigned char i = 0;		// Variable to track steps
 	static unsigned char current_step = 0;  // Current step index
 
 	// State transitions
@@ -359,16 +359,16 @@ int SM3_Tick(int state) {
 		break;
 
 	case SM3_TURN_MOTOR_CW:
-		current_step = (current_step + 1) % 4;  // Increment step in circular manner
+		current_step = (current_step + 1) % 4;	// Increment step in circular manner
 		GPIOD_PDOR = phases[current_step];
-		sync_motor_bit_to_led(0);	// Toggle white LED
+		sync_motor_bit_to_led(0);		// Toggle white LED
 		i++;
 		break;
 
 	case SM3_TURN_MOTOR_CCW:
 		current_step = (current_step - 1 + 4) % 4;	// Decrement step in circular manner
 		GPIOD_PDOR = phases[current_step];
-		sync_motor_bit_to_led(0);	// Toggle white LED
+		sync_motor_bit_to_led(0);			// Toggle white LED
 		i++;
 		break;
 
@@ -392,9 +392,9 @@ int main(void) {
 
 	// Configure PORTC GPIO pins
 	PORTC_GPCLR = 0x01BF0100;	// Configure PC0-PC3, PC4, PC5, PC7, PC8 as GPIO
-	GPIOC_PDDR |= 0x000F;       // Set PC0-PC3 as outputs (rows)
-	GPIOC_PDDR &= ~0x01B0;      // Set PC4, PC5, PC7, PC8 as inputs (columns)
-	GPIOC_PDOR |= 0x0000;       // Set outputs to LOW
+	GPIOC_PDDR |= 0x000F;		// Set PC0-PC3 as outputs (rows)
+	GPIOC_PDDR &= ~0x01B0;		// Set PC4, PC5, PC7, PC8 as inputs (columns)
+	GPIOC_PDOR |= 0x0000;		// Set outputs to LOW
 	PORTC_PCR4 |= PORT_PCR_PE_MASK | PORT_PCR_PS_MASK;	// Enable pull-up on PC4
 	PORTC_PCR5 |= PORT_PCR_PE_MASK | PORT_PCR_PS_MASK;	// Enable pull-up on PC5
 	PORTC_PCR7 |= PORT_PCR_PE_MASK | PORT_PCR_PS_MASK;	// Enable pull-up on PC7
@@ -404,7 +404,7 @@ int main(void) {
 	// PC10 generates 1 kHz PWM signal
 	// Refer to: - buzzer_off(), buzzer_on()
 	SIM_SCGC3 |= SIM_SCGC3_FTM3_MASK;	// Enable clock for FTM3
-	PORTC_PCR10 = 0x300;	// Port C Pin 10 as FTM3_CH6 (ALT3)
+	PORTC_PCR10 = 0x300;			// Port C Pin 10 as FTM3_CH6 (ALT3)
 
 	// Configure PORTD GPIO pins
 	PORTD_GPCLR = 0x003F0100;	// Configure pins PD0-PD5
