@@ -39,7 +39,7 @@ const unsigned long SM3_PERIOD = 15;	// State machine 3 period
 // PIT0 Interrupt Service Routine (ISR)
 void PIT0_IRQHandler(void) {
 	// Clear the interrupt flag for PIT channel 0
-	PIT->CHANNEL[0].TFLG |= PIT_TFLG_TIF_MASK;
+	PIT_TFLG0 |= PIT_TFLG_TIF_MASK;
 
 	// Iterate over all tasks and handle execution
 	for (unsigned char i = 0; i < NUM_TASKS; i++) {
@@ -57,23 +57,23 @@ void PIT0_IRQHandler(void) {
 // Function to configure the PIT timer for the desired period
 void TimerSet(unsigned long period) {
 	// Enable clock for PIT module
-	SIM->SCGC6 |= SIM_SCGC6_PIT_MASK;
+	SIM_SCGC6 |= SIM_SCGC6_PIT_MASK;
 
 	// Enable the PIT module
-	PIT->MCR &= ~PIT_MCR_MDIS_MASK;
+	PIT_MCR &= ~PIT_MCR_MDIS_MASK;
 
 	// Calculate the timer load value for a 1 ms interrupt
 	uint32_t timerLoadValue = (period * (SystemCoreClock / 1000)) - 1;
-	PIT->CHANNEL[0].LDVAL = PIT_LDVAL_TSV(timerLoadValue);
+	PIT_LDVAL0 = PIT_LDVAL_TSV(timerLoadValue);
 
 	// Enable interrupts for PIT channel 0
-	PIT->CHANNEL[0].TCTRL |= PIT_TCTRL_TIE_MASK;
+	PIT_TCTRL0 |= PIT_TCTRL_TIE_MASK;
 }
 
 // Function to start the PIT timer
 void TimerOn() {
 	// Start the PIT timer on channel 0
-	PIT->CHANNEL[0].TCTRL |= PIT_TCTRL_TEN_MASK;
+	PIT_TCTRL0 |= PIT_TCTRL_TEN_MASK;
 	// Enable the PIT interrupt in the NVIC
 	NVIC_EnableIRQ(PIT0_IRQn);
 }
