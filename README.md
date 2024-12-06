@@ -7,4 +7,4 @@ This project simulates digital door lock behavior. Core components include a 4-b
 
 ## Disclaimer
 
-This repository is intended for personal documentation purposes only. I do not advocate academic dishonesty. Note that the code provided may or may not be functional and should be used at your own risk.
+This repository is intended for personal documentation purposes only. I do not advocate academic dishonesty.
