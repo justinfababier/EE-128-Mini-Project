@@ -388,7 +388,7 @@ int main(void) {
 	// Configure PORTB GPIO pins
 	PORTB_GPCLR = 0x0C0C0100;	// Configure PB2, PB3, PB10, PB11 as GPIO
 	GPIOB_PDDR |= 0x0C0C;		// Set PB2, PB3, PB10, PB11 as outputs
-	GPIOB_PDOR |= 0x0000;		// Set PB2-PB3 as LOW
+	GPIOB_PDOR &= ~0x0C0C;		// Set PB2-PB3 as LOW
 
 	// Configure PORTC GPIO pins
 	PORTC_GPCLR = 0x01BF0100;	// Configure PC0-PC3, PC4, PC5, PC7, PC8 as GPIO
