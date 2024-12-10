@@ -394,7 +394,7 @@ int main(void) {
 	PORTC_GPCLR = 0x01BF0100;	// Configure PC0-PC3, PC4, PC5, PC7, PC8 as GPIO
 	GPIOC_PDDR |= 0x000F;		// Set PC0-PC3 as outputs (rows)
 	GPIOC_PDDR &= ~0x01B0;		// Set PC4, PC5, PC7, PC8 as inputs (columns)
-	GPIOC_PDOR |= 0x0000;		// Set outputs to LOW
+	GPIOC_PDOR &= ~0x000F;		// Set outputs to LOW
 	PORTC_PCR4 |= PORT_PCR_PE_MASK | PORT_PCR_PS_MASK;	// Enable pull-up on PC4
 	PORTC_PCR5 |= PORT_PCR_PE_MASK | PORT_PCR_PS_MASK;	// Enable pull-up on PC5
 	PORTC_PCR7 |= PORT_PCR_PE_MASK | PORT_PCR_PS_MASK;	// Enable pull-up on PC7
